@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>호출 서비스</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>호출 서비스</h1>
+        <input type="number" id="numberInput" placeholder="숫자를 입력하세요">
+        <br>
+        <button onclick="callNumber()">호출</button>
+    </div>
+
+    <script>
+        function callNumber() {
+            const number = parseInt(document.getElementById('numberInput').value);
+            if (!isNaN(number)) {
+                const numberText = numberToKorean(number);
+                const message = `${numberText} 번님 진료실로 들어와 주십시오.`;
+                const speech = new SpeechSynthesisUtterance(message);
+                speech.lang = 'ko-KR';
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert('숫자를 입력하세요.');
+            }
+        }
+
+        function numberToKorean(number) {
+            const units = ['', '십', '백', '천'];
+            const koreanDigits = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+            let result = '';
+            let unitIndex = 0;
+
+            while (number > 0) {
+                const digit = number % 10;
+                if (digit > 0) {
+                    const digitKorean = koreanDigits[digit];
+                    const unit = units[unitIndex];
+
+                    if (unitIndex > 0 && digit === 1) {
+                        result = unit + result;
+                    } else {
+                        result = digitKorean + unit + result;
+                    }
+                }
+                unitIndex++;
+                number = Math.floor(number / 10);
+            }
+
+            return result;
+        }
+    </script>
+</body>
+</html>
